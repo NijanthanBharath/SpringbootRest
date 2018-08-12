@@ -1,7 +1,10 @@
 package com.nijanthan;
 
+import java.util.List;
+
 import javax.websocket.server.PathParam;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,5 +54,30 @@ public class TestController {
 		return dto;
 	}
 	
+	@Autowired
+	private StudentRepository studentRepository;
+	
+	@RequestMapping(value = "/insertStudent/{mark}", method = RequestMethod.POST)
+	public Student insertStudent(@RequestParam("name") String name,@PathVariable("mark") long mark) {
+		//http://localhost:12345/test/insertStudent/12?name=Nijanthan
+		Student dto=new Student();
+		dto.setName(name);
+		dto.setMark(mark);
+		studentRepository.save(dto);
+		return dto;
+	}
+	
+	
+	@RequestMapping(value = "/getAllStudents", method = RequestMethod.GET)
+	public List<Student> getAllStudents() {
+		//http://localhost:12345/test/getAllStudents
+		return (List<Student>) studentRepository.findAll();
+	}
+	
+	@RequestMapping(value = "/findByName/{name}", method = RequestMethod.GET)
+	public List<Student> findByName(@PathVariable("name") String name ) {
+		//http://localhost:12345/test/findByName/Nijanthan
+		return (List<Student>) studentRepository.findByName(name);
+	}
 
 }
